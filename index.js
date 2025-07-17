@@ -35,6 +35,11 @@ db.serialize(() => {
       }
     });
   });
+  db.run(`CREATE TABLE IF NOT EXISTS comments (
+    id INTEGER PRIMARY KEY,
+    author TEXT,
+    content TEXT
+  )`);
 });
 
 // 📦 Fonction pour rendre une page HTML avec layout
@@ -54,6 +59,7 @@ function renderWithLayout(res, viewFile, options = {}) {
       finalHtml = finalHtml.replace('{{content}}', viewContent);
       finalHtml = finalHtml.replace('{{username}}', options.username || '');
       finalHtml = finalHtml.replace('{{error}}', options.error || '');
+      finalHtml = finalHtml.replace('{{comments}}', options.comments || '');
 
       // Auth UI blocks
       if (options.isLoggedIn) {
@@ -177,6 +183,57 @@ app.get('/page', (req, res) => {
     } else {
       res.send(data);
     }
+  });
+});
+
+// Vulnérable à XSS stockée
+app.get('/comments-xss', (req, res) => {
+  db.all("SELECT * FROM comments", (err, rows) => {
+    const commentsHtml = rows.map(c =>
+      `<li><strong>${c.author}</strong>: ${c.content}</li>`
+    ).join('');
+    renderWithLayout(res, 'comments-xss.html', {
+      comments: commentsHtml,
+      isLoggedIn: req.session.loggedIn,
+      username: req.session.username
+    });
+  });
+});
+
+app.post('/comments-xss', (req, res) => {
+  const { author, content } = req.body;
+  db.run("INSERT INTO comments (author, content) VALUES (?, ?)", [author, content], () => {
+    res.redirect('/comments-xss');
+  });
+});
+
+// Protégée contre XSS
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+app.get('/comments-safe', (req, res) => {
+  db.all("SELECT * FROM comments", (err, rows) => {
+    const commentsHtml = rows.map(c =>
+      `<li><strong>${escapeHtml(c.author)}</strong>: ${escapeHtml(c.content)}</li>`
+    ).join('');
+    renderWithLayout(res, 'comments-safe.html', {
+      comments: commentsHtml,
+      isLoggedIn: req.session.loggedIn,
+      username: req.session.username
+    });
+  });
+});
+
+app.post('/comments-safe', (req, res) => {
+  const { author, content } = req.body;
+  db.run("INSERT INTO comments (author, content) VALUES (?, ?)", [author, content], () => {
+    res.redirect('/comments-safe');
   });
 });
 

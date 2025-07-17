@@ -1,0 +1,9 @@
+<h2>Commentaire non protégé</h2>
+<form action="/comments-xss" method="post">
+  <input name="author" placeholder="Votre nom">
+  <textarea name="content" placeholder="Votre commentaire"></textarea>
+  <button>Envoyer</button>
+</form>
+<ul>
+  {{comments}}
+</ul>
