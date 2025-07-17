@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sécurité Web</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+    <nav>
+      <a href="/">Accueil</a>
+      <a href="/about">À propos</a>
+      <a href="/page?name=../ressources.txt">Ressources</a>
+      <!-- IF_LOGGED_IN -->
+      <a href="/secret-insecure">Zone secrète ou pas</a>
+      <a href="/secret">Zone secrète</a>
+      <!-- END_IF -->
+    </nav>
+
+    <div class="auth">
+      <!-- LOGIN_FORM -->
+      <form action="/login-insecure" method="get">
+        <button>Login - insecure</button>
+      </form>
+
+      <form action="/login" method="get">
+        <button>Login</button>
+      </form>
+      <!-- END_LOGIN -->
+
+      <!-- LOGOUT_FORM -->
+      <form action="/logout" method="get">
+        <button>Logout ({{username}})</button>
+      </form>
+      <!-- END_LOGOUT -->
+    </div>
+  </header>
+
+  <main>
+    {{content}}
+  </main>
+</body>
+</html>

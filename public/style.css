@@ -1,0 +1,118 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #1e293b;
+  color: #fff;
+  padding: 1.5em 0.5em;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.08);
+}
+
+nav {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
+nav a {
+  color: #60a5fa;
+  background: #1e293b;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  font-weight: 500;
+}
+
+nav a:hover {
+  background: #60a5fa;
+  color: #1e293b;
+}
+
+.auth {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.auth form {
+  display: inline;
+}
+
+.auth button {
+  background: #f59e42;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4em 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auth button:hover {
+  background: #fbbf24;
+  color: #1e293b;
+}
+
+main {
+  max-width: 600px;
+  margin: 2em auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(30,41,59,0.08);
+  padding: 2em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+input[type="text"], input[type="password"], input[name="username"], input[name="password"] {
+  padding: 0.6em;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #60a5fa;
+  color: #1e293b;
+}
+
+div[style*="color: red"] {
+  color: #ef4444 !important;
+  font-weight: 600;
+  margin-top: 0.5em;
+}
+
+@media (max-width: 700px) {
+  main {
+    max-width: 98vw;
+    padding: 1em;
+  }
+  nav {
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+}
