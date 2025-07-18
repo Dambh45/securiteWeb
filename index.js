@@ -1,3 +1,7 @@
+require('dotenv').config();
+const http = require('http');
+const https = require('https');
+
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -238,6 +242,32 @@ app.post('/comments-safe', (req, res) => {
 });
 
 // 🚀 Serveur
-app.listen(PORT, () => {
-  console.log(`✅ Serveur lancé : http://localhost:${PORT}`);
-});
+const MODE = process.env.MODE || 'dev';
+
+if (MODE === 'prod') {
+  // Lecture du certificat auto-signé
+  const privateKey = fs.readFileSync('./certs/selfsigned.key', 'utf8');
+  const certificate = fs.readFileSync('./certs/selfsigned.crt', 'utf8');
+  const credentials = { key: privateKey, cert: certificate };
+
+  // Serveur HTTPS principal
+  https.createServer(credentials, app).listen(443, () => {
+    console.log('🔐 Serveur HTTPS lancé sur le port 443');
+  });
+
+  // Redirection HTTP → HTTPS
+  http.createServer((req, res) => {
+    const host = req.headers.host.replace(/:\d+$/, '');
+    res.writeHead(301, { Location: `https://${host}${req.url}` });
+    res.end();
+  }).listen(80, () => {
+    console.log('🌐 Redirection HTTP → HTTPS active sur le port 80');
+  });
+
+} else {
+  // Mode développement : HTTP simple
+  const PORT = 3000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Mode DEV - Serveur HTTP sur http://localhost:${PORT}`);
+  });
+}
